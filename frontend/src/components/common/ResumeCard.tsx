@@ -1,5 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Copy, Download, Edit3, MoreVertical, Trash2 } from 'lucide-react';
+import { Copy, Download, Edit3, MoreVertical, Target, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getTemplateById } from '../../stores/template';
 import { Resume } from '../../types/resume';
@@ -62,6 +62,14 @@ export function ResumeCard({ resume, onDuplicate, onDelete }: ResumeCardProps) {
             to={`/resumes/${resume.id}/edit`}
           >
             <Edit3 size={16} aria-hidden /> 编辑
+          </Link>
+          <Link
+            className="inline-flex min-h-10 items-center justify-center rounded-md border border-[var(--border)] px-3 py-2 text-sm font-semibold hover:bg-[var(--surface-alt)]"
+            to={`/resumes/${resume.id}/job-fit`}
+            aria-label="岗位适配档案"
+            title="岗位适配档案"
+          >
+            <Target size={16} aria-hidden />
           </Link>
           <Link
             className="inline-flex min-h-10 items-center justify-center rounded-md border border-[var(--border)] px-3 py-2 text-sm font-semibold hover:bg-[var(--surface-alt)]"

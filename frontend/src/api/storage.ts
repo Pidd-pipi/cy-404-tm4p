@@ -1,3 +1,4 @@
+import { JobFitProfile } from '../types/job-fit';
 import { Profile } from '../types/profile';
 import { Resume } from '../types/resume';
 import { readStorage, storageKeys, writeStorage } from '../utils/storage';
@@ -9,6 +10,7 @@ export interface WorkspaceSnapshot {
   profile: Profile;
   selectedTemplateId: string;
   theme: 'light' | 'dark';
+  jobFitProfiles?: JobFitProfile[];
 }
 
 export function readWorkspaceSnapshot(fallbackProfile: Profile): WorkspaceSnapshot {
@@ -19,6 +21,7 @@ export function readWorkspaceSnapshot(fallbackProfile: Profile): WorkspaceSnapsh
     profile: readStorage<Profile>(storageKeys.profile, fallbackProfile),
     selectedTemplateId: readStorage<string>(storageKeys.template, 'atelier'),
     theme: readStorage<'light' | 'dark'>(storageKeys.theme, 'light'),
+    jobFitProfiles: readStorage<JobFitProfile[]>(storageKeys.jobFitProfiles, []),
   };
 }
 
@@ -28,5 +31,9 @@ export function writeWorkspaceSnapshot(snapshot: WorkspaceSnapshot): void {
   writeStorage(storageKeys.profile, snapshot.profile);
   writeStorage(storageKeys.template, snapshot.selectedTemplateId);
   writeStorage(storageKeys.theme, snapshot.theme);
+  // 旧备份没有岗位适配档案字段，导入时保留现有数据不被覆盖
+  if (snapshot.jobFitProfiles) {
+    writeStorage(storageKeys.jobFitProfiles, snapshot.jobFitProfiles);
+  }
 }
 
