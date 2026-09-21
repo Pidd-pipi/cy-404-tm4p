@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { Copy, Download, Edit3, MoreVertical, Trash2 } from 'lucide-react';
+import { ClipboardList, Copy, Download, Edit3, MoreVertical, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useJobProfileStore } from '../../stores/job-profile';
 import { getTemplateById } from '../../stores/template';
 import { Resume } from '../../types/resume';
 import { formatDateTime } from '../../utils/format';
@@ -14,6 +15,10 @@ interface ResumeCardProps {
 export function ResumeCard({ resume, onDuplicate, onDelete }: ResumeCardProps) {
   const template = getTemplateById(resume.templateId);
   const enabledSections = resume.sections.filter((section) => section.enabled).length;
+  const activeProfileCount = useJobProfileStore(
+    (state) => state.profiles.filter((profile) => profile.resumeId === resume.id && profile.status !== 'withdrawn')
+      .length,
+  );
 
   return (
     <article className="group flex min-h-[260px] flex-col justify-between border border-[var(--border)] bg-[var(--surface)] p-5 shadow-panel transition hover:-translate-y-0.5">
@@ -62,6 +67,19 @@ export function ResumeCard({ resume, onDuplicate, onDelete }: ResumeCardProps) {
             to={`/resumes/${resume.id}/edit`}
           >
             <Edit3 size={16} aria-hidden /> 编辑
+          </Link>
+          <Link
+            className="relative inline-flex min-h-10 items-center justify-center rounded-md border border-[var(--border)] px-3 py-2 text-sm font-semibold hover:bg-[var(--surface-alt)]"
+            to={`/resumes/${resume.id}/profiles`}
+            aria-label="岗位适配档案"
+            title="岗位适配档案"
+          >
+            <ClipboardList size={16} aria-hidden />
+            {activeProfileCount > 0 ? (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-bold text-[var(--ink-invert)]">
+                {activeProfileCount}
+              </span>
+            ) : null}
           </Link>
           <Link
             className="inline-flex min-h-10 items-center justify-center rounded-md border border-[var(--border)] px-3 py-2 text-sm font-semibold hover:bg-[var(--surface-alt)]"

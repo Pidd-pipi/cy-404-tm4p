@@ -1,3 +1,4 @@
+import { JobProfile } from '../types/job-profile';
 import { Profile } from '../types/profile';
 import { Resume } from '../types/resume';
 import { readStorage, storageKeys, writeStorage } from '../utils/storage';
@@ -9,6 +10,8 @@ export interface WorkspaceSnapshot {
   profile: Profile;
   selectedTemplateId: string;
   theme: 'light' | 'dark';
+  /** 旧版本备份可能没有该字段，导入时按空数组处理 */
+  jobProfiles?: JobProfile[];
 }
 
 export function readWorkspaceSnapshot(fallbackProfile: Profile): WorkspaceSnapshot {
@@ -19,6 +22,7 @@ export function readWorkspaceSnapshot(fallbackProfile: Profile): WorkspaceSnapsh
     profile: readStorage<Profile>(storageKeys.profile, fallbackProfile),
     selectedTemplateId: readStorage<string>(storageKeys.template, 'atelier'),
     theme: readStorage<'light' | 'dark'>(storageKeys.theme, 'light'),
+    jobProfiles: readStorage<JobProfile[]>(storageKeys.jobProfiles, []),
   };
 }
 
@@ -28,5 +32,5 @@ export function writeWorkspaceSnapshot(snapshot: WorkspaceSnapshot): void {
   writeStorage(storageKeys.profile, snapshot.profile);
   writeStorage(storageKeys.template, snapshot.selectedTemplateId);
   writeStorage(storageKeys.theme, snapshot.theme);
+  writeStorage(storageKeys.jobProfiles, snapshot.jobProfiles ?? []);
 }
-
